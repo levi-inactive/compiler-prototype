@@ -28,6 +28,8 @@ LE      "<="
 GE      ">="
 EQ      "=="
 NE      "!="
+OR      "||"
+AND     "&&"
 
 
 
@@ -62,6 +64,8 @@ NE      "!="
 {GE}      { return (GREATER_OR_EQUAL); }
 {EQ}      { return (EQUAL); }
 {NE}      { return (NOT_EQUAL); }
+{OR}      { return (OR); }
+{AND}     { return (AND); }
 
 
 
@@ -75,23 +79,10 @@ int	    { return (INT); }
 float   { return (FLOAT); }
 char    { return (CHAR); }
 void    { return (VOID); }
-double  { return (DOUBLE); }
 for 	{ return (FOR); }
 while	{ return (WHILE); }
 printf  { return (PRINTF); }
 main    { return (MAIN); }
-
-true {
-    yyval.boolean = 1;
-    return (BOOL_CONST);
-}
-
-false {
-    yyval.boolean = 0;
-    return (BOOL_CONST);
-}
-
-
 
  /*
   * String constants (C syntax)

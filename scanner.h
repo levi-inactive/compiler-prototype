@@ -20,9 +20,10 @@
 #define WHILE 277
 #define PRINTF 278
 #define MAIN 279
-#define BOOL_CONST 280
 #define STR_CONST 281
 #define INT_CONST 282
 #define TYPEID 283
 #define OBJECTID 284
 #define ERROR 285
+#define OR 286
+#define AND 287
