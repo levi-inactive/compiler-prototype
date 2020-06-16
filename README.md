@@ -1,1 +1,1 @@
-# Epic-COOL-Compiler
+# compiler-prototype
