@@ -123,6 +123,8 @@ LE              <=
     return (ERROR);
 }
 
+
+
  /*
   * The multiple-character operators.
   */
@@ -193,7 +195,7 @@ f[aA][lL][sS][eE]	{
 
 
  /*
-  * String constans (C syntax)
+  * String constants (C syntax)
   * Escape sequence \c is accepted for all characters c. Except for
   * \n \t \b \f, the result is c.
   */
@@ -203,7 +205,7 @@ f[aA][lL][sS][eE]	{
 	if (string_const_len > 1 && str_contains_null_char) {
 		strcpy(cool_yylval.error_msg, "String contains null character");
 		BEGIN 0; 
-        return(ERROR);
+        	return(ERROR);
 	}
 
 	cool_yylval.symbol = stringtable.add_string(string_const);
@@ -211,7 +213,7 @@ f[aA][lL][sS][eE]	{
     return(STR_CONST);
 }
 
-  /* Start 
+  /* Start string constant. */
 \"	{
 	memset(string_const, 0, sizeof string_const);
 	string_const_len = 0; 
