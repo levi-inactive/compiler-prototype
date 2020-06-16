@@ -197,12 +197,6 @@ f[aA][lL][sS][eE]	{
   * Escape sequence \c is accepted for all characters c. Except for
   * \n \t \b \f, the result is c.
   */
-\"	{
-	memset(string_const, 0, sizeof string_const);
-	string_const_len = 0; 
-    str_contains_null_char = false;
-	BEGIN STRING;
-}
 
  /* Stop reading string constant. */
 <STRING>\"		{ 
@@ -215,6 +209,14 @@ f[aA][lL][sS][eE]	{
 	cool_yylval.symbol = stringtable.add_string(string_const);
 	BEGIN 0; 
     return(STR_CONST);
+}
+
+  /* Start 
+\"	{
+	memset(string_const, 0, sizeof string_const);
+	string_const_len = 0; 
+    str_contains_null_char = false;
+	BEGIN STRING;
 }
 
  /* Handle string containing EOF. */
