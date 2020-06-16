@@ -64,6 +64,9 @@ bool str_contain_null_char;
   * Define names for regular expressions here.
   */
 
+ /* Declare start conditions. */
+%START LINE_COMMENT BLOCK_COMMENT STRING
+
 DARROW          =>
 ASSIGN          <-
 LE              <=
