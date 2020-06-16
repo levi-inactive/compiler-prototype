@@ -8,7 +8,7 @@
   * to the code in the file.  Don't remove anything that was here initially
   */
 %{
-#include "cool-parse.h"
+#include "include/cool-parse.h"
 // #include <stringtab.h>
 // #include <utilities.h>
 // #include <stdint.h>
