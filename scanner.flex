@@ -22,12 +22,12 @@ bool str_contains_null_char;
  /* Define names for regular expressions here. */
 ALPHA   [a-zA-Z]
 DIGIT   [0-9]
-INC     ++
-DEC     --
-LE      <=
-GE      >=
-EQ      ==
-NE      !=
+INC     "++"
+DEC     "--"
+LE      "<="
+GE      ">="
+EQ      "=="
+NE      "!="
 
 
 
