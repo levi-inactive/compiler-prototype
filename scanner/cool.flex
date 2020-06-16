@@ -52,7 +52,7 @@ extern YYSTYPE cool_yylval;
  */
 char string_const[MAX_STR_CONST];
 int string_const_len;
-bool str_contain_null_char;
+bool str_contains_null_char;
 
 
 
@@ -81,15 +81,8 @@ LE              <=
   * Nested comments.
   */
 
- /* Begin comments. */
+ /* Begin line comment. */
 "--"    { BEGIN LINE_COMMENT; }
-"(\*"   { BEGIN BLOCK_COMMENT; }
-
- /* Handle unmatched block comment. */
-"\*)"   {
-    strcpy(cool_yylval.error_msg, "Unmatched *)");
-    return (ERROR);
-}
 
  /* If a LINE_COMMENT has begun and contains a line jump,
     end the LINE_COMMENT and incremment current line number. */
@@ -97,6 +90,13 @@ LE              <=
     BEGIN 0;
     curr_lineno++;
 }
+
+ /* Match any character but newline \n.
+    No need to take action. */
+<LINE_COMMENT>.     {}
+
+ /* Begin block comment. */
+"(\*"   { BEGIN BLOCK_COMMENT; }
 
  /* If a BLOCK_COMMENT has begun and contains a line jump,
     incremment current line number. */
@@ -113,12 +113,15 @@ LE              <=
     return (ERROR);
 }
 
- /* Match any character but newline \n.
+ /* Match any character but newline.
     No need to take action. */
-<LINE_COMMENT>.     {}
 <BLOCK_COMMENT>.    {}
 
-
+ /* Handle unmatched block comment ending. */
+"\*)"   {
+    strcpy(cool_yylval.error_msg, "Unmatched *)");
+    return (ERROR);
+}
 
  /*
   * The multiple-character operators.
@@ -197,8 +200,21 @@ f[aA][lL][sS][eE]	{
 \"	{
 	memset(string_const, 0, sizeof string_const);
 	string_const_len = 0; 
-    str_contain_null_char = false;
+    str_contains_null_char = false;
 	BEGIN STRING;
+}
+
+ /* Stop reading string constant. */
+<STRING>\"		{ 
+	if (string_const_len > 1 && str_contains_null_char) {
+		strcpy(cool_yylval.error_msg, "String contains null character");
+		BEGIN 0; 
+        return(ERROR);
+	}
+
+	cool_yylval.symbol = stringtable.add_string(string_const);
+	BEGIN 0; 
+    return(STR_CONST);
 }
 
  /* Handle string containing EOF. */
@@ -239,7 +255,8 @@ f[aA][lL][sS][eE]	{
             break;
 		case '0': 
             string_const[string_const_len++] = 0; 
-            str_contain_null_char = true; break;
+            str_contains_null_char = true; 
+            break;
 		default: 
             string_const[string_const_len++] = yytext[1];
 	}
@@ -254,19 +271,6 @@ f[aA][lL][sS][eE]	{
 	strcpy(cool_yylval.error_msg, "Unterminated string constant");
 	BEGIN 0; 
     return(ERROR);
-}
-
- /* Stop reading string constant. */
-<STRING>\"		{ 
-	if (string_const_len > 1 && str_contain_null_char) {
-		strcpy(cool_yylval.error_msg, "String contains null character");
-		BEGIN 0; 
-        return(ERROR);
-	}
-
-	cool_yylval.symbol = stringtable.add_string(string_const);
-	BEGIN 0; 
-    return(STR_CONST);
 }
 
  /* A string can contain anything but end of line. */
