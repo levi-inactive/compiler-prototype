@@ -9,9 +9,9 @@
   */
 %{
 #include "include/cool-parse.h"
-// #include <stringtab.h>
-// #include <utilities.h>
-// #include <stdint.h>
+/* #include <stringtab.h> */
+/* #include <utilities.h> */
+/* #include <stdint.h> */
 
 /* The compiler assumes these identifiers. */
 #define yylval cool_yylval
@@ -78,40 +78,40 @@ LE              <=
   * Nested comments.
   */
 
- // Begin comments.
+ /* Begin comments. */
 "--"    { BEGIN LINE_COMMENT; }
 "(\*"   { BEGIN BLOCK_COMMENT; }
 
- // Handle unmatched block comment.
+ /* Handle unmatched block comment. */
 "\*)"   {
     strcpy(cool_yylval.error_msg, "Unmatched *)");
     return (ERROR);
 }
 
- // If a LINE_COMMENT has begun and contains a line jump,
- // end the LINE_COMMENT and incremment current line number.
+ /* If a LINE_COMMENT has begun and contains a line jump,
+    end the LINE_COMMENT and incremment current line number. */
 <LINE_COMMENT>\n    {
     BEGIN 0;
     curr_lineno++;
 }
 
- // If a BLOCK_COMMENT has begun and contains a line jump,
- // incremment current line number.
+ /* If a BLOCK_COMMENT has begun and contains a line jump,
+    incremment current line number. */
 <BLOCK_COMMENT>\n       { curr_lineno++; }
 
- // If a BLOCK_COMMENT has begun and contains a closing block
- // comment element, end the BLOCK_COMMENT.
+ /* If a BLOCK_COMMENT has begun and contains a closing block
+   comment element, end the BLOCK_COMMENT. */
 <BLOCK_COMMENT>"\*)"    { BEGIN 0; }
 
- // Handle BLOCK_COMMENT containing EOF.
+ /* Handle BLOCK_COMMENT containing EOF. */
 <BLOCK_COMMENT><<EOF>> {
     strcpy(cool_yylval.error_msg, "EOF in comment");
 	BEGIN 0;
     return (ERROR);
 }
 
- // Match any character but newline \n.
- // No need to take action.
+ /* Match any character but newline \n.
+    No need to take action. */
 <LINE_COMMENT>.     {}
 <BLOCK_COMMENT>.    {}
 
@@ -154,7 +154,7 @@ LE              <=
   * which must begin with a lower-case letter.
   */
 
- // ?i means "apply option case-insensitive".
+ /* ?i means "apply option case-insensitive". */
 (?i:CLASS)		{ return (CLASS); }
 (?i:ELSE)		{ return (ELSE); }
 (?i:FI)			{ return (FI); }
@@ -174,7 +174,7 @@ LE              <=
 (?i:LE)			{ return (LE); }
 (?i:NOT)		{ return (NOT); }
 
- // true and false must begin with a lower-case letter. 
+ /* true and false must begin with a lower-case letter. */
 t[rR][uU][eE]		{ 
 	cool_yylval.boolean = 1;
 	return (BOOL_CONST);
@@ -198,16 +198,16 @@ f[aA][lL][sS][eE]	{
 	BEGIN STRING;
 }
 
- // Handle string containing EOF.
+ /* Handle string containing EOF. */
 <STRING><<EOF>>	{ 
 	strcpy(cool_yylval.error_msg, "EOF in string constant");
 	BEGIN 0; 
     return (ERROR);
 }
 
- // If a STRING has begun and contains an scape 
- // character, handle it. Scape character can be
- // anything but end of line.
+ /* If a STRING has begun and contains an scape 
+    character, handle it. Scape character can be
+    anything but end of line. */
 <STRING>\\.		{
 	if (string_const_len >= MAX_STR_CONST) {
 		strcpy(cool_yylval.error_msg, "String constant too long");
@@ -242,10 +242,10 @@ f[aA][lL][sS][eE]	{
 	}
 }
 
- // Multiline string constant.
+ /* Multiline string constant. */
 <STRING>\\\n	{ curr_lineno++; } 
 
- // Handle a string containing end of line.
+ /* Handle a string containing end of line. */
 <STRING>\n		{
 	curr_lineno++;
 	strcpy(cool_yylval.error_msg, "Unterminated string constant");
@@ -253,7 +253,7 @@ f[aA][lL][sS][eE]	{
     return(ERROR);
 }
 
- // Stop reading string constant.
+ /* Stop reading string constant. */
 <STRING>\"		{ 
 	if (string_const_len > 1 && str_contain_null_char) {
 		strcpy(cool_yylval.error_msg, "String contains null character");
@@ -266,7 +266,7 @@ f[aA][lL][sS][eE]	{
     return(STR_CONST);
 }
 
- // A string can contain anything but end of line.
+ /* A string can contain anything but end of line. */
 <STRING>.		{ 
 	if (string_const_len >= MAX_STR_CONST) {
 		strcpy(cool_yylval.error_msg, "String constant too long");
