@@ -16,7 +16,7 @@ bool str_contains_null_char;
 %}
  
  /* Declare start conditions. */
-%START STRING
+%START LINE_COMMENT BLOCK_COMMENT STRING
 
  /* Define names for regular expressions here. */
 ALPHA   [a-zA-Z]
@@ -33,6 +33,70 @@ AND     "&&"
 
 
 %%
+ /*
+  * Whitespace.
+  */
+[ \t]   {};
+\n      { yylineno = yylineno + 1; }
+
+
+
+ /*
+  * Comments.
+  */
+
+ /* Begin line comment. */
+\/\/ {
+    printf("LINE_COMMENT ");
+    BEGIN LINE_COMMENT;
+}
+
+ /* If a LINE_COMMENT has begun and contains a line jump,
+    end the LINE_COMMENT and incremment current line number. */
+<LINE_COMMENT>\n    {
+    BEGIN 0;
+    curr_lineno++;
+    printf("\n");
+}
+
+ /* Match any character but newline \n.
+    No need to take action. */
+<LINE_COMMENT>.     {}
+
+ /* Begin block comment. */
+"\/\*" {
+    printf("BLOCK_COMMENT ");
+    BEGIN BLOCK_COMMENT;
+}
+
+ /* If a BLOCK_COMMENT has begun and contains a line jump,
+    incremment current line number. */
+<BLOCK_COMMENT>\n       { curr_lineno++; }
+
+ /* If a BLOCK_COMMENT has begun and contains a closing block
+   comment element, end the BLOCK_COMMENT. */
+<BLOCK_COMMENT>"\*\/"    { BEGIN 0; }
+
+ /* Handle BLOCK_COMMENT containing EOF. */
+<BLOCK_COMMENT><<EOF>> {
+    /* strcpy(cool_yylval.error_msg, "EOF in comment"); */
+    printf("\nERROR: EOF in comment.\n");
+	BEGIN 0;
+    return (ERROR);
+}
+
+ /* Match any character but newline.
+    No need to take action. */
+<BLOCK_COMMENT>.    {}
+
+ /* Handle unmatched block comment ending. */
+"\*)"   {
+    strcpy(cool_yylval.error_msg, "Unmatched *)");
+    return (ERROR);
+}
+
+
+
  /*
   * Single-character operators.
   */
@@ -198,7 +262,7 @@ main {
  /* Stop reading string constant. */
 <STRING>\" {
     if (str_length > 1 && str_contains_null_char) {
-        printf("ERROR: string contains null character.");
+        printf("\nERROR: string contains null character.\n");
         BEGIN 0;
         return (ERROR);  
     }
@@ -220,7 +284,7 @@ main {
  /* Handle string containing EOF. */
 <STRING><<EOF>> {
     /* strcpy(yylval.error_msg, "EOF in string constant."); */
-    printf("ERROR: EOF in string constant.");
+    printf("\nERROR: EOF in string constant.\n");
     BEGIN 0;
     return (ERROR);
 }
@@ -231,7 +295,7 @@ main {
 <STRING>\\. {
     if (str_length >= MAX_STR_CONST) {
         /* strcpy(yylval.error_msg, "String constant too long."); */
-        printf("ERROR: String constant too long.");
+        printf("\nERROR: String constant too long.\n");
         BEGIN 0;
         return (ERROR);
     }
@@ -271,7 +335,7 @@ main {
 <STRING>\n  {
     yylineno++;
     /* strcpy(yylval.error_msg, "Unterminated string constant."); */
-    printf("ERROR: Unterminated string constant.");
+    printf("\nERROR: Unterminated string constant.\n");
     BEGIN 0;
     return (ERROR);
 }
@@ -280,7 +344,7 @@ main {
 <STRING>.   {
     if (str_length >= MAX_STR_CONST) {
         /* strcpy(yylval.error_msg, "String constant too long."); */
-        printf("ERROR: String constant too long.");
+        printf("\nERROR: String constant too long.\n");
         BEGIN 0;
         return (ERROR);
     }
@@ -311,14 +375,12 @@ main {
     return (OBJECTID);
 }
 
-
-
  /*
   * Other errors.
   */
 . {
     /* strcpy(yylval.error_msg, yytext); */
-    printf("ERROR: Unkown error.");
+    printf("\nERROR: Unknown error caused by : %s.\n", yytext[0]);
     return (ERROR);
 }
 

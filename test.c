@@ -1,3 +1,10 @@
+// Line comment.
+
+/*
+ * Block
+ * comment.
+ */
+
 int main () {
 	int int_var = 0;
     int_var++;
