@@ -34,14 +34,6 @@ AND     "&&"
 
 %%
  /*
-  * Whitespace.
-  */
-[ \t]   {};
-\n      { yylineno = yylineno + 1; }
-
-
-
- /*
   * Comments.
   */
 
@@ -90,8 +82,9 @@ AND     "&&"
 <BLOCK_COMMENT>.    {}
 
  /* Handle unmatched block comment ending. */
-"\*)"   {
-    strcpy(cool_yylval.error_msg, "Unmatched *)");
+"\*\/"   {
+    /* strcpy(cool_yylval.error_msg, "Unmatched *)"); */
+    printf("\nERROR: Unmatched */\n");
     return (ERROR);
 }
 
@@ -374,6 +367,16 @@ main {
     printf("OBJECTID ");
     return (OBJECTID);
 }
+
+
+
+ /*
+  * Whitespace.
+  */
+[ \t]   {};
+\n      { yylineno = yylineno + 1; }
+
+
 
  /*
   * Other errors.
