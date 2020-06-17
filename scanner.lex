@@ -13,6 +13,8 @@ extern int curr_lineno;
 int str_length;
 bool str_contains_null_char;
 
+extern YYSTYPE yylval;
+
 %}
  
  /* Declare start conditions. */

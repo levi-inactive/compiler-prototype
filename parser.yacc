@@ -206,4 +206,4 @@ int main(int argc, char *argv[])
 
 void yyerror(char *s) {
 	printf("%d : %s %s\n", yylineno, s, yytext );
-}         
+}
