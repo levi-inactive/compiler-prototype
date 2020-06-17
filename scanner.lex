@@ -47,7 +47,7 @@ AND     "&&"
     end the LINE_COMMENT and incremment current line number. */
 <LINE_COMMENT>\n    {
     BEGIN 0;
-    curr_lineno++;
+    yylineno++;
     printf("\n");
 }
 
@@ -63,7 +63,7 @@ AND     "&&"
 
  /* If a BLOCK_COMMENT has begun and contains a line jump,
     incremment current line number. */
-<BLOCK_COMMENT>\n       { curr_lineno++; }
+<BLOCK_COMMENT>\n       { yylineno++; }
 
  /* If a BLOCK_COMMENT has begun and contains a closing block
    comment element, end the BLOCK_COMMENT. */
