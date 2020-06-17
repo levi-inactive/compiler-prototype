@@ -1,7 +1,4 @@
 %{
-
-#include scanner.h
-
 /* Max size of string constants. */
 #define MAX_STR_CONST 1025
 #define YY_NO_UNPUT /* keep g++ happy. */
@@ -39,19 +36,22 @@ AND     "&&"
   */
 "{"         { return (OPEN_CURLY_BRACKET); }
 "}"			{ return (CLOSE_CURLY_BRACKET); }
+"["         { return (OPEN_SQUARE_BRACKET); }
+"]"         { return (CLOSE_SQUARE_BRACKET); }
 "("			{ return (OPEN_BRACKET); }
 ")"			{ return (CLOSE_BRACKET); }
-","			{ return ','; }
-";"			{ return ';'; }
-"+"			{ return '+'; }
-"-"			{ return '-'; }
-"*"			{ return '*'; }
-"/"			{ return '/'; }
-"%"			{ return '%'; }
-"."			{ return '.'; }
-"<"			{ return '<'; }
-">"         { return '>'; }
-"!"         { return '!'; }
+","			{ return (COMMA); }
+";"			{ return (SEMICOLON); }
+"+"			{ return (PLUS); }
+"-"			{ return (MINUS); }
+"*"			{ return (MULTIPLICATION); }
+"/"			{ return (DIVISION); }
+"%"			{ return (MODULUS); }
+"."			{ return (DOT); }
+"<"			{ return (LESS); }
+">"         { return (GREATER); }
+"!"         { return (NOT); }
+"="         { return (ASSIGN); }
 
 
 
@@ -79,9 +79,7 @@ int	    { return (INT); }
 float   { return (FLOAT); }
 char    { return (CHAR); }
 void    { return (VOID); }
-for 	{ return (FOR); }
 while	{ return (WHILE); }
-printf  { return (PRINTF); }
 main    { return (MAIN); }
 
  /*
@@ -190,7 +188,7 @@ main    { return (MAIN); }
 
 [A-Z][a-zA-Z0-9_]*  {
     yyval.symbol = yytext;
-    return (TYPEID);
+    return (CLASSID);
 }
 
 [a-z][a-zA-Z0-9_]*  {
