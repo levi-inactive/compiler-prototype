@@ -1,4 +1,6 @@
 %{
+#include <stdbool.h>
+
 /* Max size of string constants. */
 #define MAX_STR_CONST 1025
 #define YY_NO_UNPUT /* keep g++ happy. */
@@ -91,12 +93,12 @@ main    { return (MAIN); }
  /* Stop reading string constant. */
 <STRING>\" {
     if (str_length > 1 && str_contains_null_char) {
-        strcpy(yyval.error_msg, "String contains null character.");
+        strcpy(yylval.error_msg, "String contains null character.");
         BEGIN 0;
         return (ERROR);  
     }
 
-    yyval.symbol = string_const;
+    yylval.symbol = string_const;
     BEGIN 0;
     return (STR_CONST);
 }
@@ -105,13 +107,13 @@ main    { return (MAIN); }
 \" {
     memset(string_const, 0, sizeof string_const);
     str_length = 0;
-    str_contains_null_char = flase;
+    str_contains_null_char = false;
     BEGIN STRING;
 }
 
  /* Handle string containing EOF. */
 <STRING><<EOF>> {
-    strcpy(yyval.error_msg, "EOF in string constant.");
+    strcpy(yylval.error_msg, "EOF in string constant.");
     BEGIN 0;
     return (ERROR);
 }
@@ -121,7 +123,7 @@ main    { return (MAIN); }
     anything but end of line. */
 <STRING>\\. {
     if (str_length >= MAX_STR_CONST) {
-        strcpy(yyval.error_msg, "String constant too long.");
+        strcpy(yylval.error_msg, "String constant too long.");
         BEGIN 0;
         return (ERROR);
     }
@@ -160,7 +162,7 @@ main    { return (MAIN); }
  /* Handle a string containing new line. */
 <STRING>\n  {
     curr_lineno++;
-    strcpy(yyval.error_msg, "Unterminated string constant.");
+    strcpy(yylval.error_msg, "Unterminated string constant.");
     BEGIN 0;
     return (ERROR);
 }
@@ -168,7 +170,7 @@ main    { return (MAIN); }
  /* A string can contain anything but end of line. */
 <STRING>.   {
     if (str_length >= MAX_STR_CONST) {
-        strcpy(yyval.error_msg, "String constant too long.");
+        strcpy(yylval.error_msg, "String constant too long.");
         BEGIN 0;
         return (ERROR);
     }
@@ -182,17 +184,17 @@ main    { return (MAIN); }
   * Integers and identifiers.
   */
 {DIGIT}+    {
-    yyval.symbol = yytext;
+    yylval.symbol = yytext;
     return (INT_CONST);
 }
 
 [A-Z][a-zA-Z0-9_]*  {
-    yyval.symbol = yytext;
+    yylval.symbol = yytext;
     return (CLASSID);
 }
 
 [a-z][a-zA-Z0-9_]*  {
-    yyval.symbol = yytext;
+    yylval.symbol = yytext;
     return (OBJECTID);
 }
 
@@ -202,7 +204,7 @@ main    { return (MAIN); }
   * Other errors.
   */
 . {
-    strcpy(yyval.error_msg, yytext);
+    strcpy(yylval.error_msg, yytext);
     return (ERROR);
 }
 

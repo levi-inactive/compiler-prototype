@@ -1,7 +1,7 @@
 %{
 
 #include <stdio.h>
-#include <stdlib.h
+#include <stdlib.h>
 
 extern FILE *fp;
 
@@ -203,7 +203,7 @@ int main(int argc, char *argv[])
 	fclose(yyin);
     return 0;
 }
-         
-yyerror(char *s) {
+
+void yyerror(char *s) {
 	printf("%d : %s %s\n", yylineno, s, yytext );
 }         
