@@ -96,7 +96,7 @@ assignment:
     |   OBJECTID ASSIGN array_usage
     |   array_usage ASSIGN assignment
     |   OBJECTID COMMA assignment
-    |   INT_CONST, assignment
+    |   INT_CONST assignment
     |   OBJECTID PLUS assignment
     |   OBJECTID MINUS assignment
     |   OBJECTID MULTIPLICATION assignment
@@ -170,8 +170,8 @@ if_statement:
     ;
 
 increment_or_decrement: 
-    |   ID INCREMENT
-    |   ID DECREMENT
+    |   OBJECTID INCREMENT
+    |   OBJECTID DECREMENT
     ;
 
 expression:
