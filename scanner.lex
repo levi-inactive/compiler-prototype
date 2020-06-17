@@ -8,7 +8,7 @@
 /* to assemble string constants. */
 char string_const[MAX_STR_CONST]; 
 
-extern int curr_lineno;
+extern int yylineno;
 
 int str_length;
 bool str_contains_null_char;
@@ -265,11 +265,11 @@ main {
 }
 
  /* Multiline string constant. */
-<STRING>\\\n    { curr_lineno++; }
+<STRING>\\\n    { yylineno++; }
 
  /* Handle a string containing new line. */
 <STRING>\n  {
-    curr_lineno++;
+    yylineno++;
     /* strcpy(yylval.error_msg, "Unterminated string constant."); */
     printf("ERROR: Unterminated string constant.");
     BEGIN 0;
