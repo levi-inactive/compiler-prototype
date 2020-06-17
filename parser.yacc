@@ -1,3 +1,6 @@
+/*
+ * Definitions.
+ */
 %{
 
 #include <stdio.h>
@@ -9,6 +12,9 @@ extern FILE *fp;
 
 
 
+/*
+ * Token definitions.
+ */
 %token OPEN_CURLY_BRACKET
 %token CLOSE_CURLY_BRACKET
 %token OPEN_SQUARE_BRACKET
@@ -74,6 +80,9 @@ extern FILE *fp;
 
 
 
+/*
+ * Rules section.
+ */
 %%
 
 start:  
@@ -195,9 +204,9 @@ int main(int argc, char *argv[])
     yyin = fopen(argv[1], "r");
 	
     if (!yyparse()) {
-		printf("\nCOMPLETADOO\n");
+		printf("\n SUCCESS. \n");
     } else {
-		printf("\nFAILED\n");
+		printf("\n FAILURE. \n");
     }
 	
 	fclose(yyin);

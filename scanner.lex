@@ -13,8 +13,6 @@ extern int curr_lineno;
 int str_length;
 bool str_contains_null_char;
 
-extern YYSTYPE yylval;
-
 %}
  
  /* Declare start conditions. */
@@ -38,53 +36,158 @@ AND     "&&"
  /*
   * Single-character operators.
   */
-"{"         { return (OPEN_CURLY_BRACKET); }
-"}"			{ return (CLOSE_CURLY_BRACKET); }
-"["         { return (OPEN_SQUARE_BRACKET); }
-"]"         { return (CLOSE_SQUARE_BRACKET); }
-"("			{ return (OPEN_BRACKET); }
-")"			{ return (CLOSE_BRACKET); }
-","			{ return (COMMA); }
-";"			{ return (SEMICOLON); }
-"+"			{ return (PLUS); }
-"-"			{ return (MINUS); }
-"*"			{ return (MULTIPLICATION); }
-"/"			{ return (DIVISION); }
-"%"			{ return (MODULUS); }
-"."			{ return (DOT); }
-"<"			{ return (LESS); }
-">"         { return (GREATER); }
-"!"         { return (NOT); }
-"="         { return (ASSIGN); }
+"{" {
+    printf("OPEN_CURLY_BRACKET "); 
+    return (OPEN_CURLY_BRACKET); 
+}
+"}"	{
+    printf("CLOSE_CURLY_BRACKET "); 
+    return (CLOSE_CURLY_BRACKET); 
+}
+"[" {
+    printf("OPEN_SQUARE_BRACKET "); 
+    return (OPEN_SQUARE_BRACKET); 
+}
+"]" {
+    printf("CLOSE_SQUARE_BRACKET "); 
+    return (CLOSE_SQUARE_BRACKET); 
+}
+"("	{
+    printf("OPEN_BRACKET "); 
+    return (OPEN_BRACKET); 
+}
+")"	{
+    printf("CLOSE_BRACKET "); 
+    return (CLOSE_BRACKET); 
+}
+","	{
+    printf("COMMA "); 
+    return (COMMA); 
+}
+";"	{
+    printf("SEMICOLON\n"); 
+    return (SEMICOLON); 
+}
+"+"	{
+    printf("PLUS "); 
+    return (PLUS); 
+}
+"-"	{
+    printf("MINUS "); 
+    return (MINUS); 
+}
+"*"	{
+    printf("MULTIPLICATION "); 
+    return (MULTIPLICATION); 
+}
+"/"	{
+    printf("DIVISION "); 
+    return (DIVISION); 
+}
+"%"	{
+    printf("MODULUS "); 
+    return (MODULUS); 
+}
+"."	{
+    printf("DOT "); 
+    return (DOT); 
+}
+"<"	{
+    printf("LESS "); 
+    return (LESS); 
+}
+">" {
+    printf("GREATER "); 
+    return (GREATER); 
+}
+"!" {
+    printf("NOT "); 
+    return (NOT); 
+}
+"=" {
+    printf("ASSIGN "); 
+    return (ASSIGN); 
+}
 
 
 
  /*
   * Multiple-character operators.
   */
-{INC}     { return (INCREMENT); }
-{DEC}     { return (DECREMENT); }
-{LE}      { return (LESS_OR_EQUAL); }
-{GE}      { return (GREATER_OR_EQUAL); }
-{EQ}      { return (EQUAL); }
-{NE}      { return (NOT_EQUAL); }
-{OR}      { return (OR); }
-{AND}     { return (AND); }
+{INC} {
+    printf("INCREMENT ");
+    return (INCREMENT); 
+}
+{DEC} {
+    printf("DECREMENT ");
+    return (DECREMENT); 
+}
+{LE} {
+    printf("LESS_OR_EQUAL ");
+    return (LESS_OR_EQUAL); 
+}
+{GE} {
+    printf("GREATER_OR_EQUAL ");
+    return (GREATER_OR_EQUAL); 
+}
+{EQ} {
+    printf("EQUAL ");
+    return (EQUAL); 
+}
+{NE} {
+    printf("NOT_EQUAL ");
+    return (NOT_EQUAL); 
+}
+{OR} {
+    printf("OR ");
+    return (OR); 
+}
+{AND} {
+    printf("AND ");
+    return (AND); 
+}
 
 
 
  /*
   * Keywords.
   */
-class   { return (CLASS); }
-else    { return (ELSE); }
-if      { return (IF); }
-int	    { return (INT); }
-float   { return (FLOAT); }
-char    { return (CHAR); }
-void    { return (VOID); }
-while	{ return (WHILE); }
-main    { return (MAIN); }
+class {
+    printf("CLASS ");
+    return (CLASS); 
+}
+else {
+    printf("ELSE ");
+    return (ELSE); 
+}
+if {
+    printf("IF ");
+    return (IF); 
+}
+int {
+    printf("INT ");
+    return (INT); 
+}
+float {
+    printf("FLOAT ");
+    return (FLOAT); 
+}
+char {
+    printf("CHAR ");
+    return (CHAR); 
+}
+void {
+    printf("VOID ");
+    return (VOID); 
+}
+while {
+    printf("WHILE ");
+    return (WHILE); 
+}
+main {
+    printf("MAIN ");
+    return (MAIN); 
+}
 
  /*
   * String constants (C syntax)
@@ -95,13 +198,14 @@ main    { return (MAIN); }
  /* Stop reading string constant. */
 <STRING>\" {
     if (str_length > 1 && str_contains_null_char) {
-        strcpy(yylval.error_msg, "String contains null character.");
+        printf("ERROR: string contains null character.");
         BEGIN 0;
         return (ERROR);  
     }
 
-    yylval.symbol = string_const;
+    /* yylval.symbol = string_const; */
     BEGIN 0;
+    printf("STR_CONST ");
     return (STR_CONST);
 }
 
@@ -115,7 +219,8 @@ main    { return (MAIN); }
 
  /* Handle string containing EOF. */
 <STRING><<EOF>> {
-    strcpy(yylval.error_msg, "EOF in string constant.");
+    /* strcpy(yylval.error_msg, "EOF in string constant."); */
+    printf("ERROR: EOF in string constant.");
     BEGIN 0;
     return (ERROR);
 }
@@ -125,7 +230,8 @@ main    { return (MAIN); }
     anything but end of line. */
 <STRING>\\. {
     if (str_length >= MAX_STR_CONST) {
-        strcpy(yylval.error_msg, "String constant too long.");
+        /* strcpy(yylval.error_msg, "String constant too long."); */
+        printf("ERROR: String constant too long.");
         BEGIN 0;
         return (ERROR);
     }
@@ -164,7 +270,8 @@ main    { return (MAIN); }
  /* Handle a string containing new line. */
 <STRING>\n  {
     curr_lineno++;
-    strcpy(yylval.error_msg, "Unterminated string constant.");
+    /* strcpy(yylval.error_msg, "Unterminated string constant."); */
+    printf("ERROR: Unterminated string constant.");
     BEGIN 0;
     return (ERROR);
 }
@@ -172,7 +279,8 @@ main    { return (MAIN); }
  /* A string can contain anything but end of line. */
 <STRING>.   {
     if (str_length >= MAX_STR_CONST) {
-        strcpy(yylval.error_msg, "String constant too long.");
+        /* strcpy(yylval.error_msg, "String constant too long."); */
+        printf("ERROR: String constant too long.");
         BEGIN 0;
         return (ERROR);
     }
@@ -186,17 +294,20 @@ main    { return (MAIN); }
   * Integers and identifiers.
   */
 {DIGIT}+    {
-    yylval.symbol = yytext;
+    /* yylval.symbol = yytext; */
+    printf("INT_CONST ");
     return (INT_CONST);
 }
 
 [A-Z][a-zA-Z0-9_]*  {
-    yylval.symbol = yytext;
+    /* yylval.symbol = yytext; */
+    printf("CLASSID ");
     return (CLASSID);
 }
 
 [a-z][a-zA-Z0-9_]*  {
-    yylval.symbol = yytext;
+    /* yylval.symbol = yytext; */
+    printf("OBJECTID ");
     return (OBJECTID);
 }
 
@@ -206,7 +317,8 @@ main    { return (MAIN); }
   * Other errors.
   */
 . {
-    strcpy(yylval.error_msg, yytext);
+    /* strcpy(yylval.error_msg, yytext); */
+    printf("ERROR: Unkown error.");
     return (ERROR);
 }
 
