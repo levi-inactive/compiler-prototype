@@ -67,7 +67,10 @@ AND     "&&"
 
  /* If a BLOCK_COMMENT has begun and contains a closing block
    comment element, end the BLOCK_COMMENT. */
-<BLOCK_COMMENT>"\*\/"    { BEGIN 0; }
+<BLOCK_COMMENT>"\*\/" {
+    printf("\n");
+    BEGIN 0;
+}
 
  /* Handle BLOCK_COMMENT containing EOF. */
 <BLOCK_COMMENT><<EOF>> {
