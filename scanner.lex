@@ -97,11 +97,11 @@ AND     "&&"
   * Single-character operators.
   */
 "{" {
-    printf("OPEN_CURLY_BRACKET "); 
+    printf("OPEN_CURLY_BRACKET\n"); 
     return (OPEN_CURLY_BRACKET); 
 }
 "}"	{
-    printf("CLOSE_CURLY_BRACKET "); 
+    printf("CLOSE_CURLY_BRACKET\n"); 
     return (CLOSE_CURLY_BRACKET); 
 }
 "[" {
